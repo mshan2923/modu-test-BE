@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Slf4j(topic = "SecurityConfig")
@@ -26,6 +28,10 @@ public class SecurityConfig {
     AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception
     {
         return configuration.getAuthenticationManager();
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -46,7 +52,7 @@ public class SecurityConfig {
 
 
             http.formLogin(formLogin ->
-                    formLogin.loginPage("/api/user/login").permitAll()// /api/user/auth/login
+                    formLogin.loginPage("/api/user/login").permitAll()
                             .usernameParameter("username")
                             .passwordParameter("password")
                             .loginProcessingUrl("/api/user/login")

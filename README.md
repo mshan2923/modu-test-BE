@@ -11,5 +11,7 @@
 <h3>Service</h3>
 <h3>DB</h3>
 <p style="text-indent: 30px">연관 관계 꼬이면 머리 아파지니 주의!<p>
+<p style="text-indent: 30px">태그 , 테스트 썸네일, 찜한 테스트 엔티티없고 , 연관관계 작업 안함<p>
 </details>
+
 
