@@ -2,19 +2,26 @@ package com.example.modutest.entity.TestElement;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table()
 @Getter
+@Setter
+@Table(name = "result")
+@NoArgsConstructor
 public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //테스트 FK
-    //결과점수????
-    @Column(nullable = true)
+
+    @Column(name = "image", nullable = true)
     private String image;
-    @Column(nullable = false)
+
+    @Column(name = "content", nullable = false)
     private String content;
+
+    @Column(name = "score", nullable = false)
+    private int score;
 
 }
