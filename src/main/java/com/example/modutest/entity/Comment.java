@@ -6,7 +6,7 @@ import lombok.Getter;
 @Entity
 @Table()
 @Getter
-public class Coment {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String title;
