@@ -1,7 +1,7 @@
 package com.example.modutest.repository;
 
-import com.example.modutest.entity.Coment;
+import com.example.modutest.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ComentRepository extends JpaRepository<Coment, Long> {
+public interface ComentRepository extends JpaRepository<Comment, Long> {
 }
