@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.awt.event.MouseEvent;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +22,12 @@ public class TesterController {// 임시 테스트 컨트롤러로 오인때문�
     private final TesterService testerService;
 
     // 테스트 만들기 폼 페이지
-
+    @GetMapping("test/testMakeForm")
+    public ModelAndView testMakeForm(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("testMakeForm");
+        return modelAndView;
+    }
 
 
     // 테스트 만들기
