@@ -1,11 +1,12 @@
 package com.example.modutest.security.fillter;
 
+import com.example.modutest.entity.UserRoleEnum;
+import com.example.modutest.security.detail.UserDetailsImpl;
+import com.example.modutest.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -16,8 +17,10 @@ import java.io.IOException;
 public class LoginAuthFilter extends UsernamePasswordAuthenticationFilter {
     private String afterSuccessUrl;
     private String afterFailUrl;
-    public LoginAuthFilter(String processUrl, String afterSuccessUrl, String afterFailUrl)
+    private final JwtUtil jwtUtil;
+    public LoginAuthFilter(JwtUtil jwtUtil, String processUrl, String afterSuccessUrl, String afterFailUrl)
     {
+        this.jwtUtil = jwtUtil;
         setFilterProcessesUrl(processUrl);
         this.afterSuccessUrl = afterSuccessUrl;
         this.afterFailUrl = afterFailUrl;
@@ -64,6 +67,10 @@ public class LoginAuthFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtil.createToken(username, role);
         jwtUtil.addJwtToCookie(token, response);
         */
+        String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
+
+        jwtUtil.addJwtToCookies(username, UserRoleEnum.USER, response);
+
         if (!afterSuccessUrl.isEmpty())
             response.sendRedirect(afterSuccessUrl);
     }

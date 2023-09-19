@@ -2,6 +2,7 @@ package com.example.modutest.security;
 
 import com.example.modutest.security.detail.UserDetailsServiceImpl;
 import com.example.modutest.security.fillter.LoginAuthFilter;
+import com.example.modutest.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -23,6 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
 
@@ -38,7 +40,7 @@ public class SecurityConfig {
     @Bean
     public LoginAuthFilter loginAuthFilter() throws Exception
     {
-        LoginAuthFilter filter = new LoginAuthFilter("/api/user/login", "/" , "/api/user/loginForm");
+        LoginAuthFilter filter = new LoginAuthFilter(jwtUtil,"/api/user/login", "/" , "/api/user/loginForm");
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
