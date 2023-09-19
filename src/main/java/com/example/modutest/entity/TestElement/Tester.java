@@ -30,11 +30,11 @@ public class Tester {
     @Column(name = "image", nullable = true)
     private String image;
 
-    @Column(name = "views", nullable = false)
-    private Long views;
+    @Column(name = "views", nullable = false, columnDefinition = "bigint default 0")
+    private Long views=0L;
 
-    @Column(name = "likes", nullable = false)
-    private Long likes;
+    @Column(name = "likes", nullable = false, columnDefinition = "bigint default 0")
+    private Long likes=0L;
 
     // User FK - 하나의 유저가 여러 테스트를 생성
     @ManyToOne
