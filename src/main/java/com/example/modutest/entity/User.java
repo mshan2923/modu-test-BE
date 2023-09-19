@@ -1,9 +1,13 @@
 package com.example.modutest.entity;
 
+import com.example.modutest.entity.TestElement.Tester;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,5 +31,6 @@ public class User {
     @Column(name = "image", nullable = true)
     private String image;
 
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Tester> tests = new ArrayList<>();
 }

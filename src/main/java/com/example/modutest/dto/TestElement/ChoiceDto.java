@@ -10,4 +10,5 @@ import lombok.Setter;
 public class ChoiceDto {
     private String content;
     private String image;
+    private boolean isCorrect;
 }
