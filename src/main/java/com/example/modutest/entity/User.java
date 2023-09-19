@@ -24,9 +24,6 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "nickname", nullable = false)
-    private String nickname;
-
     @Column(name = "image", nullable = true)
     private String image;
 
