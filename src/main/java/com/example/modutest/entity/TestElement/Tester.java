@@ -47,4 +47,8 @@ public class Tester {
     // Comment FK - 하나의 테스트에 여러 댓글
     @OneToMany(mappedBy = "tester", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
+    // Tag FK - 하나의 테스트에 여러 댓글
+    @OneToMany(mappedBy = "tester", cascade = CascadeType.ALL)
+    private List<Tag> tags = new ArrayList<>();
 }
