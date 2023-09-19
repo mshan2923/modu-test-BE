@@ -2,20 +2,30 @@ package com.example.modutest.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table()
 @Getter
+@Setter
+@Table(name = "user")
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+
+    @Column(name = "username", nullable = false)
     private String username;
-    @Column(nullable = false)
+
+    @Column(name = "email", nullable = false)
     private String email;
-    @Column(nullable = false)
+
+    @Column(name = "password", nullable = false)
     private String password;
-    @Column(nullable = true)
-    private String profile;
+
+    @Column(name = "image", nullable = true)
+    private String image;
+
+
 }
