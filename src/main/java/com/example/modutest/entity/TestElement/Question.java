@@ -1,5 +1,6 @@
 package com.example.modutest.entity.TestElement;
 
+import com.example.modutest.dto.TestElement.QuestionDto;
 import com.example.modutest.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -35,4 +36,9 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Choice> choices = new ArrayList<>();
 
+    public Question(QuestionDto dto){
+        this.title = dto.getTitle();
+        this.image = dto.getImage();
+        this.choices = new ArrayList<>();
+    }
 }
