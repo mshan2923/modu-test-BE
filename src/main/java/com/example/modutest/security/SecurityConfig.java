@@ -1,6 +1,7 @@
 package com.example.modutest.security;
 
 import com.example.modutest.security.detail.UserDetailsServiceImpl;
+import com.example.modutest.security.fillter.LoginAuthFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -14,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Slf4j(topic = "SecurityConfig")
 @Configuration
@@ -33,14 +35,21 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    public LoginAuthFilter loginAuthFilter() throws Exception
+    {
+        LoginAuthFilter filter = new LoginAuthFilter("/api/user/login", "/" , "/api/user/loginForm");
+        filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
+        return filter;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
         try {
             http.csrf(t -> t.disable());//CSRF 설정
-            //http.sessionManagement((sesstion) ->
-            //        sesstion.sessionCreationPolicy(SessionCreationPolicy.STATELESS));//세션 비활성화
+            http.sessionManagement((sesstion) ->
+                    sesstion.sessionCreationPolicy(SessionCreationPolicy.STATELESS));//세션 비활성화
 
             http.authorizeHttpRequests(authHttpReq ->
                     authHttpReq
@@ -52,21 +61,20 @@ public class SecurityConfig {
 
 
             http.formLogin(formLogin ->
-                    formLogin.loginPage("/api/user/login").permitAll()
+                    formLogin.loginPage("/api/user/loginForm").permitAll()
                             .usernameParameter("username")
                             .passwordParameter("password")
-                            .loginProcessingUrl("/api/user/login")
-                            //.successHandler()
-                            //.failureHandler()
+
             );
 
 
         }catch (Exception e)
         {
             log.warn("Redirect Error : " + e.getMessage());
-            throw new Exception("Security Error : " + e.getMessage());
+            //throw new Exception("Security Error : " + e.getMessage());
         }
 
+        http.addFilterBefore(loginAuthFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
