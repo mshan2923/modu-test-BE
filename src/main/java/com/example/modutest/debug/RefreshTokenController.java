@@ -34,7 +34,7 @@ public class RefreshTokenController {
     @GetMapping("/GetTest")
     private ResponseEntity<String> jwtTest(@AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
-            return ResponseEntity.ok("Success : " + userDetails.getUsername());
+        return ResponseEntity.ok("Success : " + userDetails.getUsername());
     }
 
     @ExceptionHandler(Exception.class)
