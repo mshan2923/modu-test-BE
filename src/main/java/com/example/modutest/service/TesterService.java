@@ -55,7 +55,7 @@ public class TesterService {
     // 현재 로그인한 회원 정보 가져오기
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof UserDetails) {
+        if (authentication.getPrincipal() instanceof UserDetails) { //---------------
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String currentUsername = userDetails.getUsername();
             return userRepository.findByUsername(currentUsername).orElseThrow(

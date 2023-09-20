@@ -2,6 +2,7 @@ package com.example.modutest.security;
 
 import com.example.modutest.security.detail.UserDetailsServiceImpl;
 import com.example.modutest.security.fillter.LoginAuthFilter;
+import com.example.modutest.security.fillter.TokenAuthFilter;
 import com.example.modutest.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public TokenAuthFilter tokenAuthFilter()
+    {
+        return new TokenAuthFilter(userDetailsService, jwtUtil);
     }
     @Bean
     public LoginAuthFilter loginAuthFilter() throws Exception
@@ -76,7 +82,9 @@ public class SecurityConfig {
             //throw new Exception("Security Error : " + e.getMessage());
         }
 
+        http.addFilterBefore(tokenAuthFilter(), LoginAuthFilter.class);
         http.addFilterBefore(loginAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }
