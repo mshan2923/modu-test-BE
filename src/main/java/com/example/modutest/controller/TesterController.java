@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -45,6 +48,13 @@ public class TesterController {// 임시 테스트 컨트롤러로 오인때문�
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new StatusResponseDto("테스트 생성 중 오류 발생." + e.getMessage(), 500));
         }
+    }
+
+    // 테스트 조회
+    @GetMapping("/tests")
+    public ResponseEntity<List<TestsResponseDto>> getAllTests() {
+        List<TestsResponseDto> response = testerService.getAllTests();
+        return ResponseEntity.ok(response);
     }
 
     @ExceptionHandler(Exception.class)

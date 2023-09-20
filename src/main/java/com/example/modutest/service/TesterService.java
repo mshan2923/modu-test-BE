@@ -17,6 +17,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j(topic = "Tester Service")
 @RequiredArgsConstructor
@@ -51,6 +54,13 @@ public class TesterService {
         return testsResponseDto;
     }
 
+    // 테스트 조회
+    public List<TestsResponseDto> getAllTests() {
+        List<Tester> testers = testerRepository.findAll();
+        return testers.stream()
+                .map(TestsResponseDto::new)
+                .collect(Collectors.toList());
+    }
 
     // 현재 로그인한 회원 정보 가져오기
     public User getCurrentUser() {

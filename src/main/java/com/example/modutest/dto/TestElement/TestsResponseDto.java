@@ -28,4 +28,5 @@ public class TestsResponseDto {
         this.tags = tester.getTags().stream().map(TagDto::new).collect(Collectors.toList());
         this.comments = tester.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
     }
+
 }
