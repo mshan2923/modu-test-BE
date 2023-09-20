@@ -36,10 +36,12 @@ public class TesterService {
 
         for(QuestionDto questionDto : requestDto.getQuestions()){
             Question question = new Question(questionDto);
+            question.setTester(tester);
             tester.getQuestions().add(question);
 
             for(ChoiceDto choiceDto : questionDto.getChoices()){
                 Choice choice = new Choice(choiceDto);
+                choice.setQuestion(question);
                 question.getChoices().add(choice);
             }
         }
