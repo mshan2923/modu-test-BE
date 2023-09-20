@@ -128,8 +128,8 @@ public class JwtUtil {
     //위에 생성과 추가 합침
     public void addJwtToCookies(String username, UserRoleEnum role, HttpServletResponse res)
     {
-        addJwtToRefreshCookie(createAccessToken(username, role), res);
-        addJwtToAccessCookie(createRefreshToken(username, role), res);
+        addJwtToRefreshCookie(createRefreshToken(username, role), res);
+        addJwtToAccessCookie(createAccessToken(username, role), res);
     }
 
 
