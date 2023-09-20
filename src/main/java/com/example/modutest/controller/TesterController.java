@@ -36,10 +36,7 @@ public class TesterController {// 임시 테스트 컨트롤러로 오인때문�
     // 테스트 만들기
     @PostMapping("/test/testMakeForm")
     public ResponseEntity<StatusResponseDto> createTester(@RequestBody TestMakeRequestDto requestDto,
-                                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
-
-        log.info("------->" + userDetails.getUsername()); //============= Null 이거 고치기 / TesterService.getCurrentUser 랑 같이 고치기
-        //================> class JwtAuthFilter extends OncePerRequestFilter 생성 필요
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails){//유저 인증 필요할때 추가
         try {
             TestsResponseDto tester = testerService.createTester(requestDto);
             return ResponseEntity.ok(new StatusResponseDto("테스트 작성 완료", 200));

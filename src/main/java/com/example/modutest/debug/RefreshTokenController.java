@@ -1,11 +1,13 @@
 package com.example.modutest.debug;
 
+import com.example.modutest.security.detail.UserDetailsImpl;
 import com.example.modutest.service.JwtService;
 import com.example.modutest.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,13 +32,9 @@ public class RefreshTokenController {
         return ResponseEntity.ok("----");
     }
     @GetMapping("/GetTest")
-    private ResponseEntity<String> jwtTest(@CookieValue(JwtUtil.AUTHO_Refresh_HEADER) String Refresh,
-                                           @CookieValue(JwtUtil.AUTHO_Access_HEADER) String Access,
-                                           HttpServletResponse response) throws IOException {
-        if (jwtService.validateToken(Refresh, Access, response))
-            return ResponseEntity.ok("Success");
-        else
-            return ResponseEntity.badRequest().body("Token error");
+    private ResponseEntity<String> jwtTest(@AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+
+            return ResponseEntity.ok("Success : " + userDetails.getUsername());
     }
 
     @ExceptionHandler(Exception.class)
