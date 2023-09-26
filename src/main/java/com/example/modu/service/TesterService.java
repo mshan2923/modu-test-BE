@@ -74,10 +74,16 @@ public class TesterService {
     }
 
     // 테스트 조회
-    public List<TestsResponseDto> getAllTests(int page, int size) {
+    public List<TestsResponseDto> getAllTests(int page, int size, boolean sortByCreatedAt) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Tester> testers = testerRepository.findAllByOrderByParticipatesDesc(pageable);
+        Page<Tester> testers;
+        if(sortByCreatedAt){
+            testers = testerRepository.findAllByOrderByCreatedAtDesc(pageable);
+        }else {
+            testers = testerRepository.findAllByOrderByParticipatesDesc(pageable);
+        }
         return testers.stream().map(TestsResponseDto::new).collect(Collectors.toList());
+
     }
 
     // 카테고리별 테스트 조회

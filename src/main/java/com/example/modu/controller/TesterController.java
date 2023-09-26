@@ -42,8 +42,9 @@ public class TesterController {
     // 테스트 조회
     @GetMapping("/tests")
     public List<TestsResponseDto> getAllTests(@RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "10") int size) {
-        return testerService.getAllTests(page, size);
+                                              @RequestParam(defaultValue = "10") int size,
+                                              @RequestParam(defaultValue = "false") boolean sortByCreatedAt) {
+        return testerService.getAllTests(page, size, sortByCreatedAt);
     }
 
     // 카테고리별 테스트 조회
