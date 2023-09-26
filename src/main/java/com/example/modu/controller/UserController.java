@@ -42,7 +42,7 @@ public class UserController {
         return "signupForm";
     }*/
     @PostMapping("/signup")
-    private ResponseEntity<StatusResponseDto> signup(@RequestBody SignupRequestDto signup) {
+    private ResponseEntity<StatusResponseDto> signup(@RequestBody SignupRequestDto signup) throws IOException {
         return userService.signup(signup);
     }
     @GetMapping("/logout")
@@ -58,6 +58,14 @@ public class UserController {
     {
         return userService.update(user, update);
     }
+    
+    // +++ 프로필 사진 변경 API 추가
+    @PutMapping("/update-profile")
+    private ResponseEntity<StatusResponseDto> updateProfile(@AuthenticationPrincipal User user,
+                                                            @RequestParam("images")MultipartFile multipartFile) throws IOException {
+        return userService.updateProfile(user,multipartFile);
+    }
+    
     @DeleteMapping("/delete")
     private ResponseEntity<StatusResponseDto> deleteUser(@AuthenticationPrincipal User user)
     {
@@ -92,7 +100,7 @@ public class UserController {
 
     //==========
     
-
+    /*
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("images")MultipartFile multipartFile) throws IOException
     {
@@ -102,6 +110,6 @@ public class UserController {
     public ResponseEntity<?> downloadFile(@RequestParam("FileName") String fileName) throws IOException {
         return s3Config.download(fileName);
     }
-    // 사용 예시
+    */// 사용 예시
 
 }

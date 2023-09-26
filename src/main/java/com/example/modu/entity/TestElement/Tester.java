@@ -59,10 +59,10 @@ public class Tester extends Timestamped {
     @OneToMany(mappedBy = "tester", cascade = CascadeType.ALL)
     private List<Result> results = new ArrayList<>();
 
-    public Tester(TestMakeRequestDto requestDto){
+    public Tester(TestMakeRequestDto requestDto , String imageUrl){
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.image = requestDto.getImage();
+        this.image = imageUrl;
         this.category = requestDto.getCategory();
         this.questions = new ArrayList<>();
     }

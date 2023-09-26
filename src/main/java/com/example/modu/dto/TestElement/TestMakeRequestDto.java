@@ -4,6 +4,7 @@ import com.example.modu.dto.result.ResultRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 @Getter
@@ -12,7 +13,7 @@ public class TestMakeRequestDto {
     private Long userId;
     private String title;
     private String content;
-    private String image;
+    private MultipartFile image;
     private String category;
     private int views;
     private int likes;

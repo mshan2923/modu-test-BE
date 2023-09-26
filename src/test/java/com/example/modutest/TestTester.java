@@ -1,6 +1,5 @@
 package com.example.modutest;
 
-import com.example.modutest.dto.TestElement.TestsResponseDto;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

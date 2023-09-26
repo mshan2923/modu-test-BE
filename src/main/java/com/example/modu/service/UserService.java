@@ -8,12 +8,16 @@ import com.example.modu.entity.User;
 import com.example.modu.repository.TesterRepository;
 import com.example.modu.repository.UserRepository;
 import com.example.modu.repository.UserTestResultRepository;
+import com.example.modu.util.S3Config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +33,7 @@ public class UserService {
     private final TesterRepository testerRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserTestResultRepository userTestResultRepository;
+    private final S3Config s3Config;
 
     public String cryptPassword(String password)
     {
@@ -41,14 +46,16 @@ public class UserService {
         return passwordEncoder.encode(password);
     }
 
-    public ResponseEntity<StatusResponseDto> signup(SignupRequestDto requestDto)
-    {
+    public ResponseEntity<StatusResponseDto> signup(SignupRequestDto requestDto) throws IOException {
         Optional<User> checkUsername = userRepository.findByUsername(requestDto.getUsername());
         if (checkUsername.isPresent())
             throw new IllegalArgumentException("중복된 사용자가 존재 합니다.");
         
         String cryptPassword = cryptPassword(requestDto.getPassword());
-        User user = new User(requestDto.getUsername(), requestDto.getEmail(), cryptPassword, "", requestDto.getNickname());
+
+
+        User user = new User(requestDto.getUsername(), requestDto.getEmail(), cryptPassword,
+                s3Config.upload(requestDto.getImage()), requestDto.getNickname());
         userRepository.save(user);
         
         return ResponseEntity.ok(new StatusResponseDto("회원가입 성공" , 200));
@@ -112,6 +119,17 @@ public class UserService {
             Results[i] = new TestsResponseDto(testResults.get(i).getTester());
         }
         return ResponseEntity.ok(Arrays.stream(Results).toList());
+    }
+    public ResponseEntity<StatusResponseDto> updateProfile(User user, MultipartFile multipartFile) throws IOException {
+        if (!user.getImage().isEmpty())
+        {
+            //s3Config.
+            //기존에 있는 이미지 제거
+        }
+
+        user.setImage(s3Config.upload(multipartFile));
+        userRepository.save(user);
+        return ResponseEntity.ok(new StatusResponseDto("변경 완료", 200));
     }
 
 }

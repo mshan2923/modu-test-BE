@@ -10,6 +10,7 @@ import com.example.modu.entity.TestElement.Tester;
 import com.example.modu.entity.User;
 import com.example.modu.repository.TesterRepository;
 import com.example.modu.repository.UserRepository;
+import com.example.modu.util.S3Config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,20 +33,17 @@ import java.util.stream.Collectors;
 public class TesterService {
     private final TesterRepository testerRepository;
     private final UserRepository userRepository;
+    private final S3Config s3Config;
 
-    public ResponseEntity<StatusResponseDto> createTester(TestMakeRequestDto requestDto)
-    {
-        {
-            //인증 절차 / 지금은 첫 유저를 값을 넣음
-
-        }
+    public ResponseEntity<StatusResponseDto> createTester(TestMakeRequestDto requestDto) throws IOException {
 
         User currentUser = getCurrentUser();
         if(currentUser==null){
             throw new IllegalStateException("로그인한 사용자만 테스트를 작성할 수 있습니다.");
         }
 
-        Tester tester = new Tester(requestDto);
+
+        Tester tester = new Tester(requestDto, s3Config.upload(requestDto.getImage()));
         tester.setUser(currentUser);
         currentUser.addTest(tester);
 

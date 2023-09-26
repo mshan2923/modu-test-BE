@@ -36,9 +36,26 @@ public class S3Config {
 
     private final AmazonS3 amazonS3;
 
+    //****** 기존에 있던 이미지 제거기능이 없어요!
+
+    public boolean uploadChecker(MultipartFile multipartFile) throws IOException
+    {
+        if (multipartFile.isEmpty())
+            //return ResponseEntity.ok("업로드 하지 않음");
+            return false;
+        else if (multipartFile.getSize() > 0)
+        {
+            throw new IOException("파일이 유효 하지 않음");
+        } else
+            //return ResponseEntity.ok("업로드 확인 , 저장은 안함");
+            return true;
+    }
     public String upload(MultipartFile multipartFile) throws IOException {
 
-        if (multipartFile.getSize() < 13107200)
+        if (multipartFile.isEmpty())
+            return "";
+
+        if (multipartFile.getSize() > 13107200)
             throw new FileSizeLimitExceededException("파일 크기가 100MB가 넘습니다.", multipartFile.getSize(), 13107200);
 
         String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();

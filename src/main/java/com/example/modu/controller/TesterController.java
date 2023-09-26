@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -35,7 +36,7 @@ public class TesterController {
 
     // 테스트 만들기
     @PostMapping("/test/testMakeForm")
-    public ResponseEntity<StatusResponseDto> createTester(@RequestBody TestMakeRequestDto requestDto){
+    public ResponseEntity<StatusResponseDto> createTester(@RequestBody TestMakeRequestDto requestDto) throws IOException {
         return testerService.createTester(requestDto);
     }
 

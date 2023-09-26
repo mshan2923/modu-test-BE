@@ -92,4 +92,8 @@ public class User implements UserDetails {
         this.nickname = nickname;
         this.password = password;
     }
+    public void setImage(String image)
+    {
+        this.image = image;
+    }
 }
