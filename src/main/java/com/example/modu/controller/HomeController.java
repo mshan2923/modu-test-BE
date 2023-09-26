@@ -18,8 +18,9 @@ public class HomeController {
 
     @GetMapping("/")//초기 정보 로드 , /api/tests 랑 같음
     private List<TestsResponseDto> Home(@RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "10") int size)
+                                        @RequestParam(defaultValue = "10") int size,
+                                        @RequestParam(defaultValue = "false") boolean sortByCreatedAt)
     {
-        return testerService.getAllTests(page, size);
+        return testerService.getAllTests(page, size, sortByCreatedAt);
     }
 }
