@@ -4,20 +4,21 @@ import com.example.modu.dto.TestElement.TestsResponseDto;
 import com.example.modu.dto.user.*;
 import com.example.modu.entity.User;
 import com.example.modu.service.UserService;
+import com.example.modu.util.S3Config;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.jaas.SecurityContextLoginModule;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j(topic = "User Controller")
@@ -27,6 +28,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final S3Config s3Config;
 
     @GetMapping("/loginForm")
     private ResponseEntity<String> loginPage()
@@ -87,5 +89,19 @@ public class UserController {
     {
         return userService.getJoinTests(user);
     }
+
+    //==========
+    
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam("images")MultipartFile multipartFile) throws IOException
+    {
+        return ResponseEntity.ok(s3Config.upload(multipartFile));
+    }
+    @GetMapping("/download")
+    public ResponseEntity<?> downloadFile(@RequestParam("FileName") String fileName) throws IOException {
+        return s3Config.download(fileName);
+    }
+    // 사용 예시
 
 }
