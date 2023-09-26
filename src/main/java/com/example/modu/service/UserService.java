@@ -124,7 +124,7 @@ public class UserService {
         if (!user.getImage().isEmpty())
         {
             //s3Config.
-            //기존에 있는 이미지 제거
+            //============ 기존에 있는 이미지 제거
         }
 
         user.setImage(s3Config.upload(multipartFile));

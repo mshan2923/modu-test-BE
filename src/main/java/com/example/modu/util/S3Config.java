@@ -52,6 +52,8 @@ public class S3Config {
     }
     public String upload(MultipartFile multipartFile) throws IOException {
 
+        if (multipartFile == null)
+            return "";
         if (multipartFile.isEmpty())
             return "";
 

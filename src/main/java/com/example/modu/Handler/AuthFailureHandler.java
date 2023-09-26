@@ -13,7 +13,8 @@ import java.io.IOException;
 public class AuthFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.info("login Fail");
-        response.sendError(400, "Login Fail");
+        log.info("login Fail : " + exception.getMessage()+ " \n " + exception.fillInStackTrace().getMessage());
+
+        response.sendError(400, "Login Fail : " + exception.getMessage());
     }
 }
