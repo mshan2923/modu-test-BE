@@ -13,6 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -28,6 +32,7 @@ import java.util.Date;
 public class JwtUtil {
 
     private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
 
     //#1 JWT데이터 생성
     // Header KEY 값
@@ -53,6 +58,15 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
+    // header 토큰을 가져오기
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
     //#2 JWT 생성
     // 토큰 생성
     public String createToken(String username, UserRoleEnum role) {
@@ -70,33 +84,33 @@ public class JwtUtil {
 
     //#3 JWT 저장
     // JWT Cookie 에 저장
-    public void addJwtToCookie(String token, HttpServletResponse res) {
-        try {
-            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
-
-            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
-            cookie.setPath("/");
-
-            System.out.println(cookie.getName());
-            System.out.println(cookie.getValue());
-
-            // Response 객체에 Cookie 추가
-            res.addCookie(cookie);
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    //#4 Cookie에 들어있던 JWT토큰을 Substrin, Bareer를 뗴어내야함
-    // JWT 토큰 substring
-    public String substringToken(String tokenValue) {
-        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
-            System.out.println(tokenValue.substring(7));
-            return tokenValue.substring(7);
-        }
-        logger.error("Not Found Token");
-        throw new NullPointerException("Not Found Token");
-    }
+//    public void addJwtToCookie(String token, HttpServletResponse res) {
+//        try {
+//            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
+//
+//            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
+//            cookie.setPath("/");//================================== 이게 문제
+//
+//            System.out.println(cookie.getName());
+//            System.out.println(cookie.getValue());
+//
+//            // Response 객체에 Cookie 추가
+//            res.addCookie(cookie);
+//        } catch (UnsupportedEncodingException e) {
+//            logger.error(e.getMessage());
+//        }
+//    }
+//
+//    //#4 Cookie에 들어있던 JWT토큰을 Substrin, Bareer를 뗴어내야함
+//    // JWT 토큰 substring
+//    public String substringToken(String tokenValue) {
+//        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
+//            System.out.println(tokenValue.substring(7));
+//            return tokenValue.substring(7);
+//        }
+//        logger.error("Not Found Token");
+//        throw new NullPointerException("Not Found Token");
+//    }
 
     //#5 JWT 검증
 // 토큰 검증
@@ -139,7 +153,16 @@ public class JwtUtil {
 
     public User getUserFromToken(String token)
     {
-        return userRepository.findByUsername(getUserInfoFromToken(substringToken(token)).getSubject())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 유저는 존재하지 않습니다."));
+//        return userRepository.findByUsername(getUserInfoFromToken(resolveToken(token)).getSubject())
+//                .orElseThrow(() -> new UsernameNotFoundException("해당 유저는 존재하지 않습니다."));
+        return (User) Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
+
+    public Authentication createAuthentication(String username) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+
+
 }

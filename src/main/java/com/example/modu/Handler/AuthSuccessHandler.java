@@ -28,7 +28,7 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
         //UserRoleEnum role = ((UserDetails) authentication.getPrincipal()).getUser().getRole();
 
         String token = jwtUtil.createToken(username, UserRoleEnum.USER);
-        jwtUtil.addJwtToCookie(token, response);
+        jwtUtil.getJwtFromHeader(request);
 
     }
 }
