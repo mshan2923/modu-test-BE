@@ -3,6 +3,7 @@ package com.example.modu.security;
 import com.example.modu.Handler.AuthFailureHandler;
 import com.example.modu.Handler.AuthSuccessHandler;
 import com.example.modu.service.UserDetailService;
+import com.example.modu.util.JwtUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,6 +42,7 @@ public class SecurityConfig {
     //private final JwtUtil jwtUtil;
     private final UserDetailService userDetailService;
     //private final AuthenticationConfiguration authenticationConfiguration;
+    private  final JwtUtil jwtUtil;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -83,7 +85,7 @@ public class SecurityConfig {
         try {
             http.httpBasic(basic -> basic.disable());//basic Auth filter 비활성화
             http.csrf(t -> t.disable());
-            //http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+            http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
                 //세션 대신 JWT 쓸때
             http.requiresChannel(channel -> channel.anyRequest().requiresInsecure());
 
@@ -96,12 +98,13 @@ public class SecurityConfig {
                     );
             http.cors(cors -> cors.configure(http));
 
+
             http.formLogin(formLogin ->
-                    formLogin.loginPage("/api/user/loginForm")//<-- 서비스 로직 으로?
+                    formLogin//.loginPage("/api/user/loginForm")//<-- 서비스 로직 으로? / login 으로? 아니면 없애거나?
                             .usernameParameter("username")
                             .passwordParameter("password")
                             .loginProcessingUrl("/api/user/login")
-                            .successHandler(new AuthSuccessHandler())
+                            .successHandler(new AuthSuccessHandler(jwtUtil))
                             .failureHandler(new AuthFailureHandler())
 
             );

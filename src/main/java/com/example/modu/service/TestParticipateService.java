@@ -71,6 +71,7 @@ public class TestParticipateService {
 //    }
 
     // 현재 로그인한 회원 정보 가져오기
+    @Deprecated
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) { //---------------

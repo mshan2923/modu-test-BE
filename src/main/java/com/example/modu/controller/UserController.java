@@ -4,6 +4,7 @@ import com.example.modu.dto.TestElement.TestsResponseDto;
 import com.example.modu.dto.user.*;
 import com.example.modu.entity.User;
 import com.example.modu.service.UserService;
+import com.example.modu.util.JwtUtil;
 import com.example.modu.util.S3Config;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
     private final S3Config s3Config;
+    private final JwtUtil jwtUtil;
 
     @GetMapping("/loginForm")
     private ResponseEntity<String> loginPage()
@@ -53,23 +55,23 @@ public class UserController {
         return ResponseEntity.ok("Logout");
     }
     @PutMapping("/update")
-    private ResponseEntity<StatusResponseDto> update(@AuthenticationPrincipal User user,
+    private ResponseEntity<StatusResponseDto> update(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
                                                      @RequestBody UserUpdateRequestDto update)
     {
-        return userService.update(user, update);
+        return userService.update(jwtUtil.getUserFromToken(token), update);
     }
     
     // +++ 프로필 사진 변경 API 추가
     @PutMapping("/update-profile")
-    private ResponseEntity<StatusResponseDto> updateProfile(@AuthenticationPrincipal User user,
+    private ResponseEntity<StatusResponseDto> updateProfile(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
                                                             @RequestParam("images")MultipartFile multipartFile) throws IOException {
-        return userService.updateProfile(user,multipartFile);
+        return userService.updateProfile(jwtUtil.getUserFromToken(token),multipartFile);
     }
     
     @DeleteMapping("/delete")
-    private ResponseEntity<StatusResponseDto> deleteUser(@AuthenticationPrincipal User user)
+    private ResponseEntity<StatusResponseDto> deleteUser(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token)
     {
-        return userService.deleteUser(user);
+        return userService.deleteUser(jwtUtil.getUserFromToken(token));
     }
 
     /*
@@ -80,22 +82,23 @@ public class UserController {
 
 
     @GetMapping("/mypage") //단순 페이지 이동이 아닌 초기 로드시 정보
-    private ResponseEntity<UserDataResponse> myPage(@AuthenticationPrincipal User user)
+    private ResponseEntity<UserDataResponse> myPage(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token)
+        //(@AuthenticationPrincipal User user)
     {
-        return userService.myPage(user);
+        return userService.myPage(jwtUtil.getUserFromToken(token));
     }
 
     @GetMapping("/tests")
-    private ResponseEntity<List<TestsResponseDto>> makedTests(@AuthenticationPrincipal User user)
+    private ResponseEntity<List<TestsResponseDto>> makedTests(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token)
     {
-        return userService.makedTests(user);
+        return userService.makedTests(jwtUtil.getUserFromToken(token));
     }
     
     
     @GetMapping("/join")
-    private ResponseEntity<List<TestsResponseDto>> joinTests(@AuthenticationPrincipal User user)
+    private ResponseEntity<List<TestsResponseDto>> joinTests(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token)
     {
-        return userService.getJoinTests(user);
+        return userService.getJoinTests(jwtUtil.getUserFromToken(token));
     }
 
     //==========

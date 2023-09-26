@@ -7,6 +7,7 @@ import com.example.modu.dto.result.ResultResponseDto;
 import com.example.modu.dto.user.StatusResponseDto;
 import com.example.modu.entity.User;
 import com.example.modu.service.TesterService;
+import com.example.modu.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import java.util.List;
 public class TesterController {
 
     private final TesterService testerService;
+    private  final JwtUtil jwtUtil;
     /*
     // 테스트 만들기 폼 페이지
     @GetMapping("/test/testMakeForm")
@@ -36,8 +38,9 @@ public class TesterController {
 
     // 테스트 만들기
     @PostMapping("/test/testMakeForm")
-    public ResponseEntity<StatusResponseDto> createTester(@RequestBody TestMakeRequestDto requestDto) throws IOException {
-        return testerService.createTester(requestDto);
+    public ResponseEntity<StatusResponseDto> createTester(@RequestBody TestMakeRequestDto requestDto,
+                                                          @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token) throws IOException {
+        return testerService.createTester(requestDto, jwtUtil.getUserFromToken(token));
     }
 
     // 테스트 조회
@@ -64,14 +67,15 @@ public class TesterController {
 
     // 테스트 삭제
     @DeleteMapping("/test/{testId}")
-    public ResponseEntity<StatusResponseDto> deleteTester(@PathVariable Long testId){
-        return testerService.deleteTester(testId);
+    public ResponseEntity<StatusResponseDto> deleteTester(@PathVariable Long testId,
+                                                          @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token){
+        return testerService.deleteTester(testId, jwtUtil.getUserFromToken(token));
     }
 
 
     @PostMapping("/test/like")
-    public ResponseEntity<StatusResponseDto> likeTester(@AuthenticationPrincipal User user)
+    public ResponseEntity<StatusResponseDto> likeTester(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token)
     {
-        return testerService.likeTest(user);
+        return testerService.likeTest(jwtUtil.getUserFromToken(token));
     }
 }

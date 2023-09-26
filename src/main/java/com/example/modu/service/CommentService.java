@@ -27,16 +27,17 @@ public class CommentService {
     private final TesterRepository testerRepository;
 
     // 댓글 작성
-    public ResponseEntity<StatusResponseDto> createComment(Long testerId, CommentRequestDto requestDto) {
-        User currentUser = getCurrentUser();
+    public ResponseEntity<StatusResponseDto> createComment(Long testerId,
+                                                           CommentRequestDto requestDto,
+                                                           User user) {
         Tester tester = findTesterById(testerId);
 
-        if(currentUser==null){
+        if(user==null){
             throw new IllegalStateException("로그인한 사용자만 댓글을 작성할 수 있습니다.");
         }
 
         Comment comment = new Comment(requestDto);
-        comment.setUser(currentUser);
+        comment.setUser(user);
         comment.setTester(tester);
 
         commentRepository.save(comment);
@@ -45,12 +46,14 @@ public class CommentService {
     }
 
     // 댓글 수정
-    public ResponseEntity<StatusResponseDto> updateComment(Long testerId, Long commentId, CommentRequestDto requestDto) {
-        User currentUser = getCurrentUser();
+    public ResponseEntity<StatusResponseDto> updateComment(Long testerId,
+                                                           Long commentId,
+                                                           CommentRequestDto requestDto,
+                                                           User user) {
         Tester tester = findTesterById(testerId);
         Comment comment = findCommentById(commentId);
 
-        validateUserAuthority(comment, currentUser);
+        validateUserAuthority(comment, user);
 
         comment.update(requestDto);
 
@@ -60,11 +63,12 @@ public class CommentService {
     }
 
     // 댓글 삭제
-    public ResponseEntity<StatusResponseDto> deleteComment(Long testerId, Long commentId) {
-        User currentUser = getCurrentUser();
+    public ResponseEntity<StatusResponseDto> deleteComment(Long testerId,
+                                                           Long commentId,
+                                                           User user) {
         Comment comment = findCommentById(commentId);
 
-        validateUserAuthority(comment, currentUser);
+        validateUserAuthority(comment, user);
 
         commentRepository.delete(comment);
 
@@ -72,6 +76,7 @@ public class CommentService {
     }
 
     // 현재 로그인한 회원 정보 가져오기
+    @Deprecated
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) { //---------------

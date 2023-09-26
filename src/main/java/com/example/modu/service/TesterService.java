@@ -35,17 +35,16 @@ public class TesterService {
     private final UserRepository userRepository;
     private final S3Config s3Config;
 
-    public ResponseEntity<StatusResponseDto> createTester(TestMakeRequestDto requestDto) throws IOException {
+    public ResponseEntity<StatusResponseDto> createTester(TestMakeRequestDto requestDto, User user) throws IOException {
 
-        User currentUser = getCurrentUser();
-        if(currentUser==null){
+        if(user==null){
             throw new IllegalStateException("로그인한 사용자만 테스트를 작성할 수 있습니다.");
         }
 
 
         Tester tester = new Tester(requestDto, s3Config.upload(requestDto.getImage()));
-        tester.setUser(currentUser);
-        currentUser.addTest(tester);
+        tester.setUser(user);
+        user.addTest(tester);
 
         // 테스트 질문 생성
         for(QuestionDto questionDto : requestDto.getQuestions()){
@@ -101,18 +100,18 @@ public class TesterService {
     }
 
     // 테스트 삭제
-    public ResponseEntity<StatusResponseDto> deleteTester(Long testId) {
-        User currentUser = getCurrentUser();
+    public ResponseEntity<StatusResponseDto> deleteTester(Long testId, User user) {
         Tester tester = findTesterById(testId);
 
-        validateUserAuthority(tester, currentUser);
+        validateUserAuthority(tester, user);
 
         testerRepository.delete(tester);
 
         return ResponseEntity.ok(new StatusResponseDto("테스트가 성공적으로 삭제됨.", 200));
     }
 
-    // 현재 로그인한 회원 정보 가져오기
+    // 현재 로그인한 회원 정보 가져오기 - 비효율적인 세션 방식
+    @Deprecated
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) { //---------------
