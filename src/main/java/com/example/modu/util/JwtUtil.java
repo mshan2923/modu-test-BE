@@ -3,6 +3,7 @@ package com.example.modu.util;
 import com.example.modu.entity.User;
 import com.example.modu.entity.UserRoleEnum;
 import com.example.modu.repository.UserRepository;
+import com.example.modu.service.CorsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -28,6 +29,7 @@ import java.util.Date;
 public class JwtUtil {
 
     private final UserRepository userRepository;
+    private final CorsService corsService;
 
     //#1 JWT데이터 생성
     // Header KEY 값
@@ -137,8 +139,9 @@ public class JwtUtil {
         return null;
     }
 
-    public User getUserFromToken(String token)
+    public User getUserFromToken(String token, HttpServletRequest request)
     {
+        corsService.validateUrl(request);
         return userRepository.findByUsername(getUserInfoFromToken(substringToken(token)).getSubject())
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저는 존재하지 않습니다."));
     }
