@@ -47,6 +47,12 @@ public class UserController {
     private ResponseEntity<StatusResponseDto> signup(@RequestBody SignupRequestDto signup) throws IOException {
         return userService.signup(signup);
     }
+    @PostMapping("/login")
+    private ResponseEntity<StatusResponseDto> login(@RequestBody LoginRequestDto login,
+                                                    HttpServletResponse response)
+    {
+        return userService.login(login, response);
+    }
     @GetMapping("/logout")
     private ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response)
     {
