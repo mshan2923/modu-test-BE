@@ -111,19 +111,19 @@ public class TesterService {
     }
 
     // 현재 로그인한 회원 정보 가져오기 - 비효율적인 세션 방식
-    @Deprecated
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof UserDetails) { //---------------
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String currentUsername = userDetails.getUsername();
-            return userRepository.findByUsername(currentUsername).orElseThrow(
-                    () -> new IllegalArgumentException("인증된 사용자를 찾을 수 없습니다.")
-            );
-        } else {
-            throw new IllegalStateException("올바른 인증 정보가 아닙니다.");
-        }
-    }
+//    @Deprecated
+//    public User getCurrentUser() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication.getPrincipal() instanceof UserDetails) { //---------------
+//            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//            String currentUsername = userDetails.getUsername();
+//            return userRepository.findByUsername(currentUsername).orElseThrow(
+//                    () -> new IllegalArgumentException("인증된 사용자를 찾을 수 없습니다.")
+//            );
+//        } else {
+//            throw new IllegalStateException("올바른 인증 정보가 아닙니다.");
+//        }
+//    }
 
     // 본인이 작성한 테스트인지 확인
     private void validateUserAuthority(Tester tester, User currentUser) {
