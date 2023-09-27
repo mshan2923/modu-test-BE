@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<script>
+
+    // JavaScript
+    function login() {
+        const username = document.querySelector("input[name='username']").value;
+        const password = document.querySelector("input[name='password']").value;
+
+        const body = JSON.stringify({
+            username,
+            password,
+        });
+
+        const options = {
+            method: "POST",
+            //origin: "http://localhost",//파일로 실행시 null로 뜸 아마
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body,
+            credentials: "include",//없어도 됨
+        };
+
+        fetch("http://ec2-52-1-45-245.compute-1.amazonaws.com/api/user/login", options)
+            .then((response) => {
+                if (response.status === 200) {
+                    //window.location.href = "/";
+                    alert("로그인에 성공했습니다.");
+                } else {
+                    alert("로그인에 실패했습니다.");
+                }
+            })
+            .catch((error) => {
+                alert("로그인에 실패했습니다." + error.toString());
+            });
+    }
+
+
+
+</script>
+<body>
+<h1>Login</h1>
+<input type="text" name="username" placeholder="Username">
+<input type="password" name="password" placeholder="Password">
+<a id = "login" href="javascript:login()">로그인</a>
+</body>
+</html>

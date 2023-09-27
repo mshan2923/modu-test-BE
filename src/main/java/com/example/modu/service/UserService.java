@@ -5,13 +5,18 @@ import com.example.modu.dto.user.*;
 import com.example.modu.entity.TestElement.Tester;
 import com.example.modu.entity.TestElement.UserTestResult;
 import com.example.modu.entity.User;
+import com.example.modu.entity.UserRoleEnum;
 import com.example.modu.repository.TesterRepository;
 import com.example.modu.repository.UserRepository;
 import com.example.modu.repository.UserTestResultRepository;
+import com.example.modu.util.JwtUtil;
 import com.example.modu.util.S3Config;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +39,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserTestResultRepository userTestResultRepository;
     private final S3Config s3Config;
+    private final JwtUtil jwtUtil;
 
     public String cryptPassword(String password)
     {
@@ -61,8 +67,8 @@ public class UserService {
         return ResponseEntity.ok(new StatusResponseDto("회원가입 성공" , 200));
     }
 
-    /*
-    public  ResponseEntity<StatusResponseDto> login(LoginRequestDto requestDto)
+
+    public  ResponseEntity<StatusResponseDto> login(LoginRequestDto requestDto, HttpServletResponse response)
     {
         Optional<User> target = userRepository.findByUsername(requestDto.getUsername());
         if (target.isEmpty())
@@ -73,9 +79,12 @@ public class UserService {
             throw new IllegalArgumentException("틀린 비밀번호");
         }
 
+        String token = jwtUtil.createToken(requestDto.getUsername(), UserRoleEnum.USER);
+        jwtUtil.addJwtToCookie(token, response);
+
         return ResponseEntity.ok(new StatusResponseDto("로그인 성공", 200));
     }
-    */
+
 
     public ResponseEntity<UserDataResponse> myPage(User user)
     {

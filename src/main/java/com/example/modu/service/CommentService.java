@@ -11,9 +11,9 @@ import com.example.modu.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -76,19 +76,19 @@ public class CommentService {
     }
 
     // 현재 로그인한 회원 정보 가져오기
-    @Deprecated
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof UserDetails) { //---------------
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String currentUsername = userDetails.getUsername();
-            return userRepository.findByUsername(currentUsername).orElseThrow(
-                    () -> new IllegalArgumentException("인증된 사용자를 찾을 수 없습니다.")
-            );
-        } else {
-            throw new IllegalStateException("올바른 인증 정보가 아닙니다.");
-        }
-    }
+//    @Deprecated
+//    public User getCurrentUser() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication.getPrincipal() instanceof UserDetails) { //---------------
+//            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//            String currentUsername = userDetails.getUsername();
+//            return userRepository.findByUsername(currentUsername).orElseThrow(
+//                    () -> new IllegalArgumentException("인증된 사용자를 찾을 수 없습니다.")
+//            );
+//        } else {
+//            throw new IllegalStateException("올바른 인증 정보가 아닙니다.");
+//        }
+//    }
 
     // testId로 해당 test 가져오기
     private Tester findTesterById(Long testId) {

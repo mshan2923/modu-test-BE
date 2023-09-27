@@ -47,6 +47,12 @@ public class UserController {
     private ResponseEntity<StatusResponseDto> signup(@RequestBody SignupRequestDto signup) throws IOException {
         return userService.signup(signup);
     }
+    @PostMapping("/login")
+    private ResponseEntity<StatusResponseDto> login(@RequestBody LoginRequestDto login,
+                                                    HttpServletResponse response)
+    {
+        return userService.login(login, response);
+    }
     @GetMapping("/logout")
     private ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response)
     {
@@ -56,22 +62,25 @@ public class UserController {
     }
     @PutMapping("/update")
     private ResponseEntity<StatusResponseDto> update(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
-                                                     @RequestBody UserUpdateRequestDto update)
+                                                     @RequestBody UserUpdateRequestDto update,
+                                                     HttpServletRequest request)
     {
-        return userService.update(jwtUtil.getUserFromToken(token), update);
+        return userService.update(jwtUtil.getUserFromToken(token, request), update);
     }
     
     // +++ 프로필 사진 변경 API 추가
     @PutMapping("/update-profile")
     private ResponseEntity<StatusResponseDto> updateProfile(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
-                                                            @RequestParam("images")MultipartFile multipartFile) throws IOException {
-        return userService.updateProfile(jwtUtil.getUserFromToken(token),multipartFile);
+                                                            @RequestParam("images")MultipartFile multipartFile,
+                                                            HttpServletRequest request) throws IOException {
+        return userService.updateProfile(jwtUtil.getUserFromToken(token, request),multipartFile);
     }
     
     @DeleteMapping("/delete")
-    private ResponseEntity<StatusResponseDto> deleteUser(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token)
+    private ResponseEntity<StatusResponseDto> deleteUser(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
+                                                         HttpServletRequest request)
     {
-        return userService.deleteUser(jwtUtil.getUserFromToken(token));
+        return userService.deleteUser(jwtUtil.getUserFromToken(token, request));
     }
 
     /*
@@ -82,23 +91,26 @@ public class UserController {
 
 
     @GetMapping("/mypage") //단순 페이지 이동이 아닌 초기 로드시 정보
-    private ResponseEntity<UserDataResponse> myPage(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token)
+    private ResponseEntity<UserDataResponse> myPage(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
+                                                    HttpServletRequest request)
         //(@AuthenticationPrincipal User user)
     {
-        return userService.myPage(jwtUtil.getUserFromToken(token));
+        return userService.myPage(jwtUtil.getUserFromToken(token, request));
     }
 
     @GetMapping("/tests")
-    private ResponseEntity<List<TestsResponseDto>> makedTests(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token)
+    private ResponseEntity<List<TestsResponseDto>> makedTests(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
+                                                              HttpServletRequest request)
     {
-        return userService.makedTests(jwtUtil.getUserFromToken(token));
+        return userService.makedTests(jwtUtil.getUserFromToken(token, request));
     }
     
     
     @GetMapping("/join")
-    private ResponseEntity<List<TestsResponseDto>> joinTests(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token)
+    private ResponseEntity<List<TestsResponseDto>> joinTests(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
+                                                             HttpServletRequest request)
     {
-        return userService.getJoinTests(jwtUtil.getUserFromToken(token));
+        return userService.getJoinTests(jwtUtil.getUserFromToken(token, request));
     }
 
     //==========
