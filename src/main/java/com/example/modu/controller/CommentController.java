@@ -4,6 +4,7 @@ import com.example.modu.dto.comment.CommentRequestDto;
 import com.example.modu.dto.user.StatusResponseDto;
 import com.example.modu.service.CommentService;
 import com.example.modu.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,8 +24,9 @@ public class CommentController {
     @PostMapping("{testerId}/comment")
     public ResponseEntity<StatusResponseDto> createComment(@PathVariable Long testerId,
                                                            @RequestBody CommentRequestDto requestDto,
-                                                           @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token){
-        return commentService.createComment(testerId, requestDto, jwtUtil.getUserFromToken(token));
+                                                           @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
+                                                           HttpServletRequest request){
+        return commentService.createComment(testerId, requestDto, jwtUtil.getUserFromToken(token, request));
     }
 
     // 댓글 수정
@@ -32,16 +34,18 @@ public class CommentController {
     public ResponseEntity<StatusResponseDto> updateComment(@PathVariable Long testerId,
                                                            @PathVariable Long commentId,
                                                            @RequestBody CommentRequestDto requestDto,
-                                                           @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token){
-        return commentService.updateComment(testerId, commentId, requestDto, jwtUtil.getUserFromToken(token));
+                                                           @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
+                                                           HttpServletRequest request){
+        return commentService.updateComment(testerId, commentId, requestDto, jwtUtil.getUserFromToken(token, request));
     }
 
     // 댓글 삭제
     @DeleteMapping("{testerId}/comment/{commentId}")
     public ResponseEntity<StatusResponseDto> deleteComment(@PathVariable Long testerId,
                                                            @PathVariable Long commentId,
-                                                           @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token){
-        return commentService.deleteComment(testerId, commentId, jwtUtil.getUserFromToken(token));
+                                                           @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
+                                                           HttpServletRequest request){
+        return commentService.deleteComment(testerId, commentId, jwtUtil.getUserFromToken(token, request));
     }
 }
 

@@ -8,6 +8,7 @@ import com.example.modu.dto.user.StatusResponseDto;
 import com.example.modu.entity.User;
 import com.example.modu.service.TesterService;
 import com.example.modu.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,8 +40,9 @@ public class TesterController {
     // 테스트 만들기
     @PostMapping("/test/testMakeForm")
     public ResponseEntity<StatusResponseDto> createTester(@RequestBody TestMakeRequestDto requestDto,
-                                                          @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token) throws IOException {
-        return testerService.createTester(requestDto, jwtUtil.getUserFromToken(token));
+                                                          @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
+                                                          HttpServletRequest request) throws IOException {
+        return testerService.createTester(requestDto, jwtUtil.getUserFromToken(token, request));
     }
 
     // 테스트 조회
@@ -68,14 +70,16 @@ public class TesterController {
     // 테스트 삭제
     @DeleteMapping("/test/{testId}")
     public ResponseEntity<StatusResponseDto> deleteTester(@PathVariable Long testId,
-                                                          @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token){
-        return testerService.deleteTester(testId, jwtUtil.getUserFromToken(token));
+                                                          @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
+                                                          HttpServletRequest request){
+        return testerService.deleteTester(testId, jwtUtil.getUserFromToken(token, request));
     }
 
 
     @PostMapping("/test/like")
-    public ResponseEntity<StatusResponseDto> likeTester(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token)
+    public ResponseEntity<StatusResponseDto> likeTester(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String token,
+                                                        HttpServletRequest request)
     {
-        return testerService.likeTest(jwtUtil.getUserFromToken(token));
+        return testerService.likeTest(jwtUtil.getUserFromToken(token, request));
     }
 }
